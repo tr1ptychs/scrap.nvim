@@ -14,7 +14,7 @@ Use the package manager of your choice. Just set a keymap for toggling the windo
 ### lazy.nvim
 ```lua
 {
-  'tr1ptychs/scrap-nvim',
+  'tr1ptychs/scrap.nvim',
   config = function ()
     vim.keymap.set('n', '<leader>ts', '<Cmd>:ScrapToggle<Cr>', {})
   end
