@@ -1,4 +1,4 @@
-# scrap-nvim
+# scrap.nvim
 
 ### What it do
 Creates a command `:ScrapToggle` that opens and closes a piece of "scrap paper" for ideas, notes, your grocery list, etc.
