@@ -6,7 +6,7 @@ local scrap_file = vim.fn.stdpath('data') .. '/scrap.txt'
 
 -- defaults
 local config = {
-  border = "double",
+  border = "rounded",
   q_close = true,
 }
 
@@ -64,6 +64,8 @@ function M.toggle_pad()
 
     -- window opts
     local opts = {
+      title = " Scrap Paper ",
+      title_pos = "center",
       style = "minimal",
       relative = "editor",
       border = config.border,
