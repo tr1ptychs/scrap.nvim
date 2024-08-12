@@ -10,13 +10,13 @@ You also can use Esc in normal mode to close the window when it's open.
 Closing the floating window saves it automatically, and will persist across sessions. no need to `:w`.
 
 ## Setup
-Use the package manager of your choice. Just set a keymap for toggling the window using the command `:ScrapToggle` for example:
+Use the package manager of your choice. Just set a keymap for toggling the window using the command `:ScrapToggle`. for example:
 ### lazy.nvim
 ```lua
 {
   'tr1ptychs/scrap.nvim',
   config = function ()
-    vim.keymap.set('n', '<leader>ts', '<Cmd>:ScrapToggle<Cr>', {})
+    vim.keymap.set('n', '<leader>ts', '<Cmd>ScrapToggle<Cr>', {})
   end
 }
 ```

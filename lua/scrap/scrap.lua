@@ -4,6 +4,17 @@ local win_id = nil
 local buf_id = nil
 local scrap_file = vim.fn.stdpath('data') .. '/scrap.txt'
 
+-- defaults
+local config = {
+  border = "double",
+  q_close = true,
+}
+
+-- where defaults can be overwritten
+function M.setup(user_config)
+  config = vim.tbl_extend('force', config, user_config or {})
+end
+
 function M.toggle_pad()
   -- close window if exists
   if win_id and vim.api.nvim_win_is_valid(win_id) then
@@ -11,12 +22,15 @@ function M.toggle_pad()
       return
     end
 
+    -- write to file
     local lines = vim.api.nvim_buf_get_lines(buf_id, 0, -1, false)
     local file = io.open(scrap_file, 'w')
     if file then
       file:write(table.concat(lines, '\n'))
       file:close()
     end
+
+    -- delete buffer and close window
     if vim.api.nvim_buf_is_valid(buf_id) then
       vim.api.nvim_buf_delete(buf_id, { force = true })
     end
@@ -25,6 +39,7 @@ function M.toggle_pad()
       vim.api.nvim_win_close(win_id, true)
     end
     win_id = nil
+
   else
     -- create new buffer if doesnt exist or is invalid
     if not buf_id or not vim.api.nvim_buf_is_valid(buf_id) then
@@ -51,10 +66,11 @@ function M.toggle_pad()
     local opts = {
       style = "minimal",
       relative = "editor",
+      border = config.border,
       width = win_width,
       height = win_height,
       row = math.floor((height - win_height) / 2),
-      col = math.floor((width - win_width) / 2)
+      col = math.floor((width - win_width) / 2),
     }
 
     -- Create the floating window
@@ -64,8 +80,11 @@ function M.toggle_pad()
     vim.api.nvim_buf_set_keymap(buf_id, 'n', '<Esc>',
       '<Cmd>lua require("scrap.scrap").toggle_pad()<CR>',
       { noremap = true, silent = true })
-    -- optional: set buffer options
-    -- vim.api.nvim_buf_set_option(buf_id, "bufhidden", "wipe")
+    if config.q_close then
+      vim.api.nvim_buf_set_keymap(buf_id, 'n', 'q',
+      '<Cmd>lua require("scrap.scrap").toggle_pad()<CR>',
+      { noremap = true, silent = true })
+    end
   end
 end
 
