@@ -80,11 +80,13 @@ function M.toggle_pad()
     vim.api.nvim_buf_set_keymap(buf_id, 'n', '<Esc>',
       '<Cmd>lua require("scrap.scrap").toggle_pad()<CR>',
       { noremap = true, silent = true })
+    -- keymap for closing with q
     if config.q_close then
       vim.api.nvim_buf_set_keymap(buf_id, 'n', 'q',
       '<Cmd>lua require("scrap.scrap").toggle_pad()<CR>',
       { noremap = true, silent = true })
     end
+
   end
 end
 

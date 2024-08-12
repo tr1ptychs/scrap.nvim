@@ -11,6 +11,7 @@ Closing the floating window saves it automatically, and will persist across sess
 
 ## Setup
 Use the package manager of your choice. Just set a keymap for toggling the window using the command `:ScrapToggle`. for example:
+
 ### lazy.nvim
 ```lua
 {
