@@ -18,6 +18,7 @@ function M.setup(user_config)
   config = vim.tbl_extend('force', config, user_config or {})
 end
 
+-- save
 function M.save_pad()
   -- write to file
   local lines = vim.api.nvim_buf_get_lines(buf_id, 0, -1, false)
@@ -28,6 +29,7 @@ function M.save_pad()
   end
 end
 
+-- load
 function M.load_pad()
   -- read file into buffer
   local file = io.open(scrap_file, 'r')
@@ -38,6 +40,7 @@ function M.load_pad()
   end
 end
 
+-- close
 function M.close_pad()
   if not vim.api.nvim_buf_is_valid(buf_id) then
     return
@@ -56,6 +59,7 @@ function M.close_pad()
   win_id = nil
 end
 
+-- keymaps
 function M.init_keymaps()
   -- keymap for closing with esc
   vim.api.nvim_buf_set_keymap(buf_id, 'n', '<Esc>',
@@ -69,6 +73,7 @@ function M.init_keymaps()
   end
 end
 
+-- open
 function M.open_pad()
   -- create new buffer if doesnt exist or is invalid
   if not buf_id or not vim.api.nvim_buf_is_valid(buf_id) then
@@ -113,6 +118,7 @@ function M.open_pad()
   M.init_keymaps()
 end
 
+-- toggle (main)
 function M.toggle_pad()
   -- if window exists close, else init
   if win_id and vim.api.nvim_win_is_valid(win_id) then
