@@ -1,2 +1,1 @@
-return require('scrap.scrap')
-
+require('scrap')
