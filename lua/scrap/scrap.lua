@@ -1,8 +1,13 @@
 local M = {}
 
+local utils = require("utils")
+
 local win_id = nil
 local buf_id = nil
-local scrap_file = vim.fn.stdpath('data') .. '/scrap.txt'
+local data_path = vim.fn.stdpath('data')
+local scrap_dir = data_path .. '/scrap'
+local scrap_file = scrap_dir .. '/pad.txt'
+local old_file = data_path .. '/scrap.txt'
 
 -- defaults
 local config = {
@@ -10,29 +15,49 @@ local config = {
   q_to_close = true,
   width_coeff = 0.8,
   height_coeff = 0.8,
-
 }
 
 -- where defaults can be overwritten
 function M.setup(user_config)
   config = vim.tbl_extend('force', config, user_config or {})
+
+  if not utils.dir_exists(scrap_dir) then
+    vim.fn.mkdir(scrap_dir, 'p')
+  end
 end
 
 -- save
 function M.save_pad()
-  -- write to file
-  local lines = vim.api.nvim_buf_get_lines(buf_id, 0, -1, false)
-  local file = io.open(scrap_file, 'w')
-  if file then
-    file:write(table.concat(lines, '\n'))
-    file:close()
+  if buf_id and vim.api.nvim_buf_is_valid(buf_id) then
+    local lines = vim.api.nvim_buf_get_lines(buf_id, 0, -1, false)
+    local file = io.open(scrap_file, 'w')
+    if file then
+      file:write(table.concat(lines, '\n'))
+      file:close()
+    end
   end
 end
 
 -- load
 function M.load_pad()
+  if not buf_id or not vim.api.nvim_buf_is_valid(buf_id) then
+    buf_id = vim.api.nvim_create_buf(false, true)
+    vim.api.nvim_buf_set_name(buf_id, 'ScrapPad')
+  end
+
+  -- if still on old filepath, keep old file contents and migrate.
+  local file = io.open(old_file, 'r')
+  if file then
+    local content = file:read('*a')
+    file:close()
+    vim.api.nvim_buf_set_lines(buf_id, 0, -1, false, vim.split(content, '\n'))
+    os.remove(old_file)
+    M.save_pad()
+    return
+  end
+
   -- read file into buffer
-  local file = io.open(scrap_file, 'r')
+  file = io.open(scrap_file, 'r')
   if file then
     local content = file:read('*a')
     file:close()
@@ -42,21 +67,10 @@ end
 
 -- close
 function M.close_pad()
-  if not vim.api.nvim_buf_is_valid(buf_id) then
-    return
-  end
-
-  M.save_pad()
-
-  -- delete buffer and close window
-  if vim.api.nvim_buf_is_valid(buf_id) then
-    vim.api.nvim_buf_delete(buf_id, { force = true })
-  end
-  buf_id = nil
-  if vim.api.nvim_win_is_valid(win_id) then
+  if win_id and vim.api.nvim_win_is_valid(win_id) then
     vim.api.nvim_win_close(win_id, true)
+    win_id = nil
   end
-  win_id = nil
 end
 
 -- keymaps
@@ -75,13 +89,8 @@ end
 
 -- open
 function M.open_pad()
-  -- create new buffer if doesnt exist or is invalid
-  if not buf_id or not vim.api.nvim_buf_is_valid(buf_id) then
-    buf_id = vim.api.nvim_create_buf(false, true)
-    vim.api.nvim_buf_set_name(buf_id, 'scrap')
-  end
-
   M.load_pad()
+
   -- current editor dimensions
   local width = vim.api.nvim_get_option("columns")
   local height = vim.api.nvim_get_option("lines")
@@ -120,7 +129,6 @@ end
 
 -- toggle (main)
 function M.toggle_pad()
-  -- if window exists close, else init
   if win_id and vim.api.nvim_win_is_valid(win_id) then
     M.close_pad()
   else
