@@ -17,7 +17,7 @@ Use the package manager of your choice. Just set a keymap for toggling the windo
 {
   'tr1ptychs/scrap.nvim',
   config = function ()
-    -- optional line. override configurations defaults using this.
+    -- override configurations defaults using this.
     require('scrap').setup({})
 
     -- set a keymap as you want.
