@@ -1,7 +1,5 @@
 local M = {}
 
-local utils = require("utils")
-
 local win_id = nil
 local buf_id = nil
 local data_path = vim.fn.stdpath('data')
@@ -21,7 +19,7 @@ local config = {
 function M.setup(user_config)
   config = vim.tbl_extend('force', config, user_config or {})
 
-  if not utils.dir_exists(scrap_dir) then
+  if vim.fn.is_directory(scrap_dir) == 0 then
     vim.fn.mkdir(scrap_dir, 'p')
   end
 end
