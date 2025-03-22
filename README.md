@@ -41,10 +41,8 @@ require('scrap').setup({
 ```
 
 ## FYI
-- This was created in a few afternoons by a noob (me) (it's probably buggy). 
+- This was created in a few afternoons by a noob (me) (it's probably buggy).
+- Most importantly, you will lose undo history when you close the window.
 - This is my first nvim plugin. :)
-- This is currently in a state I would describe as "less than finished".
+- This is currently in a state I would describe as "finished-ish".
 - Do with this information what you will, use at your own risk.
-
-## Todo:
-- Enable ability to undo through previous sessions' changes.
